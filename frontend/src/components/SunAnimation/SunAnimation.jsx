@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Sun, Moon, Home } from "lucide-react";
-import "./Home.css";
-import Scenario from "./scenario";
+import React, { useEffect } from "react";
 
-const Home_page = () => {
-  const [isNight, setIsNight] = useState(false);
-
+const SunAnimation = ({ isNight, setIsNight }) => {
   useEffect(() => {
     // Add the original JavaScript logic here
     const sunContainer = document.querySelector(".sun-container");
@@ -13,6 +8,7 @@ const Home_page = () => {
 
     const handleSunClick = (e) => {
       e.stopPropagation();
+
       setIsNight((isNight) => !isNight);
       document.documentElement.classList.toggle("container-night");
       document.querySelector(".sky-night").classList.toggle("sky-night-fade");
@@ -37,6 +33,7 @@ const Home_page = () => {
       document
         .querySelectorAll(".mountain-back, .mountain-back > *")
         .forEach((el) => el.classList.toggle("mountain-back-night"));
+
       setTimeout(
         () =>
           document
@@ -59,29 +56,19 @@ const Home_page = () => {
 
     sun.addEventListener("click", handleSunClick);
 
+    const isItNight = () => {
+      const now = new Date();
+      const hours = now.getHours();
+      return hours >= 18 || hours < 6;
+    };
+    setIsNight(isItNight());
+
     return () => {
       sun.removeEventListener("click", handleSunClick);
     };
   }, []);
 
-  const toggleDayNight = () => {
-    document.querySelector(".sun").click();
-  };
-
-  return (
-    <div className="home-container">
-      <div className="background-scenario">
-        <Scenario />
-      </div>
-      <div className="content">
-        <button className="toggle-button" onClick={toggleDayNight}>
-          {isNight ? <Sun size={24} /> : <Moon size={24} />}
-        </button>
-        {/* Add other content here */}
-        
-      </div>
-    </div>
-  );
+  return null;
 };
 
-export default Home_page;
+export default SunAnimation;

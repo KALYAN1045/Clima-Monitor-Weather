@@ -81,13 +81,6 @@ html {
   transition: color 0.3s ease;
 }
 
-/* Add any additional styles for your content here */
-
-/* Preserve the text color transition from your original CSS */
-.text-color {
-  color: #7980c8;
-}
-
 .container {
   width: 450px;
   height: 50px;
@@ -157,6 +150,15 @@ html {
 
 .sky-night-fade {
   opacity: 1;
+}
+
+.page-container {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.2); /* Transparent with blur */
+  backdrop-filter: blur(10px); /* Adds blur effect */
+  border-radius: 8px;
+  text-align: center;
+  margin: 20px;
 }
 
 @-webkit-keyframes sky-night {
@@ -1178,5 +1180,5 @@ p#subtitle {
 }
 
 .text-color {
-  color: #7980c8;
+  color: #ffffff;
 }

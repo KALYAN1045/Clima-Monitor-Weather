@@ -1,0 +1,171 @@
+.carousel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.city-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.city-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.city-item.active {
+  transform: scale(1.2);
+  font-weight: bold;
+}
+
+.city-name {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.city-state {
+  font-size: 14px;
+  color: #666;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.nav-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin: 0 10px;
+  padding: 0;
+}
+
+.nav-button svg {
+  width: 24px;
+  height: 24px;
+  fill: #666;
+  transition: fill 0.3s ease;
+}
+
+.nav-button svg:hover {
+  fill: #333;
+}
+
+.cloud-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+@keyframes cloudAnimation {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.cloud {
+  position: absolute;
+  background-color: #fff;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cloud1 {
+  width: 120px;
+  height: 60px;
+  top: 20px;
+  left: 0;
+  animation: cloudAnimation 60s linear infinite;
+}
+
+.cloud2 {
+  width: 150px;
+  height: 75px;
+  top: 80px;
+  right: 0;
+  animation: cloudAnimation 80s linear infinite;
+}
+
+.cloud3 {
+  width: 100px;
+  height: 50px;
+  top: 150px;
+  left: 20%;
+  animation: cloudAnimation 70s linear infinite;
+}
+
+@keyframes sunAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.sun {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ffcf40;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: sunAnimation 5s ease-in-out infinite;
+}
+
+.city-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  position: relative;
+}
+
+.city-item {
+  margin: 0 20px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
+  opacity: 0.6;
+  transform: scale(1);
+}
+
+.city-item.active {
+  transform: scale(1.2); /* Enlarge the active city */
+  opacity: 1; /* Make active city more visible */
+}
+
+.city-item:hover {
+  transform: scale(1.2); /* Enlarge the active city */
+  opacity: 1;
+}
+
+.city-name {
+  font-size: 20px;
+  text-align: center;
+}
