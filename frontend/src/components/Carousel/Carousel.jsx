@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Carousel.css";
 
 // Define the cities and their corresponding names
@@ -12,10 +12,14 @@ const cities = [
   { name: "Pune" },
 ];
 
-const Carousel = ({ currentCity, handleCityClick }) => {
+const Carousel = ({ isNight, currentCity, handleCityClick }) => {
+  const themeClasses = {
+    text: isNight ? "text-base-light" : "text-base-dark",
+    container: isNight ? "bg-white/20" : "bg-white/30",
+  };
   return (
     <>
-      <div className="city-container">
+      <div className={`${themeClasses.text} city-container`}>
         {cities.map((city, index) => (
           <div
             key={index}

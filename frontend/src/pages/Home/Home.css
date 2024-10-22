@@ -258,7 +258,7 @@ html {
   border-top: 7px solid #bb7074;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  left: 280px;
+  left: 880px;
   /*    right: -50px;*/
   top: -5px;
   -webkit-transform-origin: center bottom;
@@ -274,7 +274,7 @@ html {
 }
 
 .boat-sail {
-  margin-left: -350px;
+  margin-left: -950px;
 }
 
 .boat,
@@ -342,7 +342,7 @@ html {
   right: 16px;
   border-left-width: 15px;
   border-right-width: 0px;
-  border-bottom: 30px solid #bb7074;
+  border-bottom: 30px solid #522b2c;
 }
 
 .boat:after {
@@ -1149,9 +1149,16 @@ p a:visited {
   opacity: 0.6;
 }
 
-h1,
-p {
-  color: #bb7074;
+h1 {
+  -webkit-transition: color 3s;
+  -o-transition: color 3s;
+  transition: color 3s;
+  -webkit-transition-delay: 2s;
+  -o-transition-delay: 2s;
+  transition-delay: 2s;
+  text-align: center;
+}
+p{
   -webkit-transition: color 3s;
   -o-transition: color 3s;
   transition: color 3s;

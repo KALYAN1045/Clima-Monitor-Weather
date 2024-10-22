@@ -6,7 +6,7 @@ import DayNightToggle from "@/components/DayNightToggle/DayNightToggle";
 import SunAnimation from "@/components/SunAnimation/SunAnimation";
 import VerticalSlider from "@/components/VerticalSlider/VerticalSlider";
 import CalendarPage from "../CalendarPage/CalendarPage";
-import TemperaturePage from "../Temperature/TemperaturePage";
+import TemperaturePage from "../TemperaturePage/TemperaturePage";
 import AlertsPage from "../AlertsPage/AlertsPage";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -23,19 +23,19 @@ const Home_page = () => {
 
   const options = [
     {
-      icon: <CalendarIcon />,
+      icon: <CalendarIcon isNight={isNight} />,
       label: "Previous Days",
-      page: <CalendarPage />,
+      page: <CalendarPage isNight={isNight} />,
     },
     {
-      icon: <TemperatureIcon />,
+      icon: <TemperatureIcon isNight={isNight} />,
       label: "Temperature",
-      page: <TemperaturePage />,
+      page: <TemperaturePage isNight={isNight} />,
     },
     {
-      icon: <AlertIcon />,
+      icon: <AlertIcon isNight={isNight} />,
       label: "Alerts",
-      page: <AlertsPage />,
+      page: <AlertsPage isNight={isNight} />,
     },
   ];
 
@@ -127,12 +127,13 @@ const Home_page = () => {
         <SunAnimation isNight={isNight} setIsNight={setIsNight} />
 
         {/* City Carousel */}
-        <Carousel currentCity={currentCity} handleCityClick={handleCityClick} />
+        <Carousel isNight={isNight} currentCity={currentCity} handleCityClick={handleCityClick} />
 
         <VerticalSlider
           options={options}
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
+          isNight={isNight}
         />
 
         {/* Animate presence for smooth transition */}

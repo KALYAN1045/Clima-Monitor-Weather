@@ -1,11 +1,11 @@
-export const TemperatureIcon = () => (
+export const TemperatureIcon = ({ isNight }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="32"
     height="32"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
+    stroke={isNight ? "#ffffff" : "#794144"} // Apply stroke color based on isNight
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
@@ -14,14 +14,14 @@ export const TemperatureIcon = () => (
   </svg>
 );
 
-export const CalendarIcon = () => (
+export const CalendarIcon = ({ isNight }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="32"
     height="32"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
+    stroke={isNight ? "#ffffff" : "#794144"} // Apply stroke color based on isNight
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
@@ -33,14 +33,14 @@ export const CalendarIcon = () => (
   </svg>
 );
 
-export const AlertIcon = () => (
+export const AlertIcon = ({ isNight }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="32"
     height="32"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="currentColor"
+    stroke={isNight ? "#ffffff" : "#794144"} // Apply stroke color based on isNight
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
