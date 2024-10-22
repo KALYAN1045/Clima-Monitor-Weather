@@ -20,6 +20,7 @@
     "moment-timezone": "^0.5.46",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0",
     "react-spring": "^9.7.4",
     "snapsvg-cjs": "^0.0.6",
     "styled-components": "^6.1.13",

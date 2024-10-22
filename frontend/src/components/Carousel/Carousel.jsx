@@ -1,16 +1,6 @@
 import React from "react";
 import "./Carousel.css";
-
-// Define the cities and their corresponding names
-const cities = [
-  { name: "Delhi" },
-  { name: "Mumbai" },
-  { name: "Chennai" },
-  { name: "Bangalore" },
-  { name: "Kolkata" },
-  { name: "Hyderabad" },
-  { name: "Pune" },
-];
+import cities from "../cities/cities.js";
 
 const Carousel = ({ isNight, currentCity, handleCityClick }) => {
   const themeClasses = {
