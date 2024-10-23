@@ -1,5 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Sun, Cloud, MapPin } from "lucide-react";
+import clearDay from "$/weather_icons/01d.png";
+import clearNight from "$/weather_icons/01n.png";
+import fewCloudsDay from "$/weather_icons/02d.png";
+import fewCloudsNight from "$/weather_icons/02n.png";
+import scatteredCloudsDay from "$/weather_icons/03d.png";
+import scatteredCloudsNight from "$/weather_icons/03n.png";
+import brokenCloudsDay from "$/weather_icons/04d.png";
+import brokenCloudsNight from "$/weather_icons/04n.png";
+import showerRainDay from "$/weather_icons/09d.png";
+import showerRainNight from "$/weather_icons/09n.png";
+import rainDay from "$/weather_icons/10d.png";
+import rainNight from "$/weather_icons/10n.png";
+import thunderstormDay from "$/weather_icons/11d.png";
+import thunderstormNight from "$/weather_icons/11n.png";
+import snowDay from "$/weather_icons/13d.png";
+import snowNight from "$/weather_icons/13n.png";
+import mistDay from "$/weather_icons/50d.png";
+import mistNight from "$/weather_icons/50n.png";
+
 import "#/WeatherCard.css"; // Make sure this CSS file is in place for any additional styling
 
 const WeatherCard = ({
@@ -9,8 +28,27 @@ const WeatherCard = ({
   weatherCode,
   city,
 }) => {
-  // Fetch the weather icon from OpenWeatherMap using current weather code
-  const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherCode}@2x.png`;
+  
+  const weatherIcons = {
+    "01d": clearDay,
+    "01n": clearNight,
+    "02d": fewCloudsDay,
+    "02n": fewCloudsNight,
+    "03d": scatteredCloudsDay,
+    "03n": scatteredCloudsNight,
+    "04d": brokenCloudsDay,
+    "04n": brokenCloudsNight,
+    "09d": showerRainDay,
+    "09n": showerRainNight,
+    "10d": rainDay,
+    "10n": rainNight,
+    "11d": thunderstormDay,
+    "11n": thunderstormNight,
+    "13d": snowDay,
+    "13n": snowNight,
+    "50d": mistDay,
+    "50n": mistNight,
+  };
 
   const leafPath = "M10,0 C10,0 20,10 10,20 C10,20 0,10 10,0";
 
@@ -37,7 +75,7 @@ const WeatherCard = ({
         return "bg-gradient-to-br from-gray-600 to-gray-600";
       case "haze":
         return "bg-gradient-to-br from-gray-600 to-gray-100";
-      case "thunder":
+      case "thunderstorm":
         return "bg-gradient-to-br from-gray-700 to-gray-500";
       default:
         return "bg-gradient-to-br from-blue-400 to-blue-200";
@@ -55,7 +93,8 @@ const WeatherCard = ({
         {/* Temperature Display */}
         <div className="absolute top-4 left-4 flex items-center z-10 font-semibold">
           <div className="text-5xl text-black ">
-            {temperature}°<span className="text-xl">C</span>
+            {temperature}
+            <span className="text-xl"></span>
           </div>
         </div>
 
@@ -76,9 +115,9 @@ const WeatherCard = ({
         {weatherCode && (
           <div className="absolute top-0 z-10 right-2">
             <img
-              src={`https://openweathermap.org/img/wn/${weatherCode}@2x.png`}
+              src={weatherIcons[weatherCode]} // Use the weatherCode dynamically
               alt="Weather Icon"
-              className="w-15 h-15"
+              className="w-10 h-10 mt-5 ml-5"
             />
           </div>
         )}
@@ -236,7 +275,7 @@ const WeatherCard = ({
           {/* Thunderstorm with Lightning */}
           <div
             className={`absolute inset-0 transition-opacity duration-500 ${
-              currentWeather === "thunder" ? "opacity-100" : "opacity-0"
+              currentWeather === "thunderstorm" ? "opacity-100" : "opacity-0"
             }`}
           >
             {/* Rain for Thunder */}

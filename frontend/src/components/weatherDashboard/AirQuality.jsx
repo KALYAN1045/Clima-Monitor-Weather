@@ -1,4 +1,3 @@
-// src/components/weatherDashboard/AirQuality.jsx
 import React from "react";
 import "#/transition.css";
 
@@ -10,7 +9,16 @@ const AirQualityCard = ({
     o3: 31.5,
   },
   containerClass,
+  isLoading = false, // Add isLoading prop with default value
 }) => {
+  // Handle case where data might be null or undefined
+  const airQualityData = data || {
+    pm25: 32,
+    so2: 0.71,
+    no2: 4.2,
+    o3: 31.5,
+  };
+
   // Function to determine AQI status and color
   const getAQIStatus = (pm25) => {
     if (pm25 <= 12) return { status: "Good", color: "bg-green-500" };
@@ -18,12 +26,26 @@ const AirQualityCard = ({
     return { status: "Poor", color: "bg-red-500" };
   };
 
-  const { status, color } = getAQIStatus(data.pm25);
+  const { status, color } = getAQIStatus(airQualityData.pm25);
+
+  // Loading metric box component
+  const LoadingMetricBox = ({ label }) => (
+    <div className="flex flex-col items-center">
+      <div className="text-sm">{label}</div>
+      <div className="h-8 w-16 mt-1 bg-gray-200 animate-pulse rounded"></div>
+    </div>
+  );
+
+  // Regular metric box component
+  const MetricBox = ({ label, value }) => (
+    <div className="flex flex-col items-center">
+      <div className="text-sm">{label}</div>
+      <div className="text-xl font-semibold">{value}</div>
+    </div>
+  );
 
   return (
-    <div
-      className={`${containerClass} max-w-sm xl:max-w-lg rounded-lg shadow-lg p-6`}
-    >
+    <div className={`${containerClass} max-w-sm xl:max-w-lg rounded-lg shadow-lg p-6`}>
       <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12" />
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
@@ -45,29 +67,21 @@ const AirQualityCard = ({
 
       {/* Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {/* PM2.5 */}
-        <div className="flex flex-col items-center">
-          <div className="text-sm">PM ₂.₅</div>
-          <div className="text-xl font-semibold">{data.pm25}</div>
-        </div>
-
-        {/* SO₂ */}
-        <div className="flex flex-col items-center">
-          <div className="text-sm">SO₂</div>
-          <div className="text-xl font-semibold">{data.so2}</div>
-        </div>
-
-        {/* NO₂ */}
-        <div className="flex flex-col items-center">
-          <div className="text-sm">NO₂</div>
-          <div className="text-xl font-semibold">{data.no2}</div>
-        </div>
-
-        {/* O₃ */}
-        <div className="flex flex-col items-center">
-          <div className="text-sm">O₃</div>
-          <div className="text-xl font-semibold">{data.o3}</div>
-        </div>
+        {isLoading ? (
+          <>
+            <LoadingMetricBox label="PM ₂.₅" />
+            <LoadingMetricBox label="SO₂" />
+            <LoadingMetricBox label="NO₂" />
+            <LoadingMetricBox label="O₃" />
+          </>
+        ) : (
+          <>
+            <MetricBox label="PM ₂.₅" value={airQualityData.pm25} />
+            <MetricBox label="SO₂" value={airQualityData.so2} />
+            <MetricBox label="NO₂" value={airQualityData.no2} />
+            <MetricBox label="O₃" value={airQualityData.o3} />
+          </>
+        )}
       </div>
     </div>
   );

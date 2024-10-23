@@ -1,24 +1,26 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, Suspense } from "react";
 import "#/Home.css";
 import Scenario from "@/components/Scenario/scenario";
 import Carousel from "@/components/Carousel/Carousel";
 import DayNightToggle from "@/components/DayNightToggle/DayNightToggle";
 import SunAnimation from "@/components/SunAnimation/SunAnimation";
 import VerticalSlider from "@/components/VerticalSlider/VerticalSlider";
-const ForecastPage = React.lazy(() => import("../ForecastPage/ForecastPage"));
-const TemperaturePage = React.lazy(() =>
-  import("../TemperaturePage/TemperaturePage")
-);
-const AlertsPage = React.lazy(() => import("../AlertsPage/AlertsPage"));
 import { AnimatePresence, motion } from "framer-motion";
+import { TemperatureIcon, CalendarIcon, AlertIcon } from "@/components/Icons/Icons";
 
-import {
-  TemperatureIcon,
-  CalendarIcon,
-  AlertIcon,
-} from "@/components/Icons/Icons";
+// Lazy loaded components
+const ForecastPage = React.lazy(() => import("../ForecastPage/ForecastPage"));
+const TemperaturePage = React.lazy(() => import("../TemperaturePage/TemperaturePage"));
+const AlertsPage = React.lazy(() => import("../AlertsPage/AlertsPage"));
 
-const Home_page = () => {
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-[500px]">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+  </div>
+);
+
+const Home_page = ({ userPreferences }) => {
   const [isNight, setIsNight] = useState(null);
   const [currentCity, setCurrentCity] = useState("Delhi");
   const [selectedOption, setSelectedOption] = useState(1);
@@ -35,7 +37,6 @@ const Home_page = () => {
       );
       const data = await response.json();
       setWeatherData(data);
-      console.log('Weather data updated:', data);
     } catch (error) {
       console.error("Error fetching weather data:", error);
     } finally {
@@ -58,27 +59,36 @@ const Home_page = () => {
       {
         icon: <CalendarIcon isNight={isNight} />,
         label: "Previous Days",
-        page: <ForecastPage isNight={isNight} />,
+        page: (
+          <Suspense fallback={<LoadingFallback />}>
+            <ForecastPage isNight={isNight} weatherData={weatherData}/>
+          </Suspense>
+        ),
       },
       {
         icon: <TemperatureIcon isNight={isNight} />,
         label: "Temperature",
         page: (
-          <TemperaturePage 
-            isNight={isNight} 
-            weatherData={weatherData} 
-            isLoading={isLoading}
-            currentCity={currentCity} 
-          />
+          <Suspense fallback={<LoadingFallback />}>
+            <TemperaturePage
+              isNight={isNight}
+              weatherData={weatherData}
+              userPreferences={userPreferences}
+            />
+          </Suspense>
         ),
       },
       {
         icon: <AlertIcon isNight={isNight} />,
         label: "Alerts",
-        page: <AlertsPage isNight={isNight} />,
+        page: (
+          <Suspense fallback={<LoadingFallback />}>
+            <AlertsPage isNight={isNight} />
+          </Suspense>
+        ),
       },
     ],
-    [isNight, weatherData, isLoading, currentCity]
+    [isNight, weatherData, userPreferences]
   );
 
   const pageVariants = {
