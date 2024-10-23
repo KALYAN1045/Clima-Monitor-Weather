@@ -1,5 +1,6 @@
 import React from "react";
 import "#/transition.css";
+import { convertTemperature } from "@/services/convertTemperature";
 import clearDay from "$/weather_icons/01d.png";
 import clearNight from "$/weather_icons/01n.png";
 import fewCloudsDay from "$/weather_icons/02d.png";
@@ -42,15 +43,20 @@ const weatherIcons = {
 
 const FiveDayForecast = ({ containerClass, forecastData }) => {
   const getDailySummary = (list) => {
+    const today = new Date().toISOString().split('T')[0]; // Get today's date
+    
     const dailyMap = list.reduce((acc, item) => {
       const date = new Date(item.dt * 1000);
-      const dateKey = date.toISOString().split("T")[0];
-
+      const dateKey = date.toISOString().split('T')[0];
+      
+      // Skip if it's today's date
+      if (dateKey === today) return acc;
+  
       if (!acc[dateKey]) {
         acc[dateKey] = {
           temps: [],
           conditions: [],
-          icons: [], // Track all icons for the day
+          icons: [],
           day: date.toLocaleDateString("en-US", { weekday: "long" }),
           date: date.toLocaleDateString("en-US", {
             day: "numeric",
@@ -60,34 +66,33 @@ const FiveDayForecast = ({ containerClass, forecastData }) => {
       }
       acc[dateKey].temps.push(item.main.temp);
       acc[dateKey].conditions.push(item.weather[0].main.toLowerCase());
-      acc[dateKey].icons.push(item.weather[0].icon); // Store icon codes
+      acc[dateKey].icons.push(item.weather[0].icon);
       return acc;
     }, {});
-
+  
     return Object.values(dailyMap)
       .map((data) => {
         const avgTemp = Math.round(
           data.temps.reduce((a, b) => a + b, 0) / data.temps.length
         );
-
-        // Get most frequent weather condition and icon
+  
         const iconCount = data.icons.reduce((acc, icon) => {
           acc[icon] = (acc[icon] || 0) + 1;
           return acc;
         }, {});
-
+  
         const mostFrequentIcon = Object.entries(iconCount).sort(
           ([, a], [, b]) => b - a
         )[0][0];
-
+  
         return {
           day: data.day,
           date: data.date,
-          temp: avgTemp,
-          icon: mostFrequentIcon, // Use the most frequent icon for the day
+          temp: convertTemperature(avgTemp),
+          icon: mostFrequentIcon,
         };
       })
-      .slice(0, 5);
+      .slice(0, 5); // Keep only next 5 days
   };
 
   const processedForecast = forecastData

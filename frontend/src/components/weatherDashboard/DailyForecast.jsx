@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import "#/scrollbar.css";
 import "#/transition.css";
+import { convertTemperature } from "@/services/convertTemperature";
 import Arrow from "$/weather_icons/direction.png";
 import clearDay from "$/weather_icons/01d.png";
 import clearNight from "$/weather_icons/01n.png";
@@ -48,7 +49,7 @@ const DailyForecast = ({ containerClass, forecastData }) => {
   const transformForecastData = (data) => {
     // Check if data and data.list exist
     if (!data || !data.list || !Array.isArray(data.list)) {
-      console.log('Invalid data structure:', data);
+      console.log("Invalid data structure:", data);
       return [];
     }
 
@@ -122,7 +123,7 @@ const DailyForecast = ({ containerClass, forecastData }) => {
               <div className="flex items-center justify-center gap-2 w-full">
                 {getWeatherIcon(data.icon)}
                 <span className=" text-2xl font-medium">
-                  {data.temp.toFixed(1)}°
+                  {convertTemperature(data.temp.toFixed(1))}°
                 </span>
               </div>
 
