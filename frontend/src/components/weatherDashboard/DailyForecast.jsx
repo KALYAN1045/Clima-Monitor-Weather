@@ -1,10 +1,11 @@
 // src/components/DailyForecast.jsx
 import React, { useRef, useEffect } from "react";
 import { Cloud, CloudRain, Sun, Moon } from "lucide-react";
-import "./scrollbar.css";
+import "#/scrollbar.css";
+import "#/transition.css";
 import Arrow from "@/assets/weather_icons/direction.png";
 
-const DailyForecast = () => {
+const DailyForecast = ({ containerClass }) => {
   const weatherData = [
     {
       time: "11:30 PM",
@@ -105,7 +106,9 @@ const DailyForecast = () => {
 
   return (
     <>
-      <h2 className="text-gray-200 text-xl font-semibold mb-2">Today at</h2>
+      <h2 className={`${containerClass}-text text-xl font-semibold mb-2`}>
+        Today at
+      </h2>
       <div ref={scrollRef} className="overflow-x-auto scroll-container">
         <div
           className="inline-flex gap-4 pb-4"
@@ -114,15 +117,15 @@ const DailyForecast = () => {
           {weatherData.map((data, index) => (
             <div
               key={index}
-              className="bg-blue-900 p-4 rounded-lg flex flex-col items-center gap-4 min-w-[9rem] h-48" // Adjusted padding, width, and height
+              className={`${containerClass} shine-effect p-4 rounded-lg flex flex-col items-center gap-4 min-w-[9rem] h-48`}
             >
               {/* First Row: Time */}
-              <span className="text-gray-200 text-lg">{data.time}</span>
+              <span className="text-lg">{data.time}</span>
 
               {/* Second Row: Icon and Temperature */}
               <div className="flex items-center justify-center gap-2 w-full">
                 {getWeatherIcon(data.icon)}
-                <span className="text-gray-200 text-2xl font-medium">
+                <span className=" text-2xl font-medium">
                   {data.temp.toFixed(1)}°
                 </span>
               </div>
@@ -130,7 +133,7 @@ const DailyForecast = () => {
               {/* Third Row: Arrow and Wind Speed */}
               <div className="flex items-center justify-center gap-2 w-full">
                 <img src={Arrow} alt="Wind Direction" className="w-5 h-5" />
-                <span className="text-gray-200 text-lg">{data.wind} Km/h</span>
+                <span className=" text-lg">{data.wind} Km/h</span>
               </div>
             </div>
           ))}

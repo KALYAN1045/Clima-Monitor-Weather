@@ -1,5 +1,6 @@
 // src/components/weatherDashboard/AirQuality.jsx
 import React from "react";
+import "#/transition.css";
 
 const AirQualityCard = ({
   data = {
@@ -8,6 +9,7 @@ const AirQualityCard = ({
     no2: 4.2,
     o3: 31.5,
   },
+  containerClass,
 }) => {
   // Function to determine AQI status and color
   const getAQIStatus = (pm25) => {
@@ -19,13 +21,16 @@ const AirQualityCard = ({
   const { status, color } = getAQIStatus(data.pm25);
 
   return (
-    <div className="max-w-sm xl:max-w-lg bg-blue-900 text-white rounded-lg shadow-lg p-6">
+    <div
+      className={`${containerClass} max-w-sm xl:max-w-lg rounded-lg shadow-lg p-6`}
+    >
+      <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12" />
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl text-gray-300">Air Quality Index</h2>
+        <h2 className="text-xl">Air Quality Index</h2>
         <span>
           <svg
-            className="w-6 h-6 text-gray-300"
+            className="w-6 h-6"
             viewBox="0 0 24 24"
             fill="currentColor"
             aria-hidden="true"
@@ -42,25 +47,25 @@ const AirQualityCard = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {/* PM2.5 */}
         <div className="flex flex-col items-center">
-          <div className="text-sm text-gray-300">PM ₂.₅</div>
+          <div className="text-sm">PM ₂.₅</div>
           <div className="text-xl font-semibold">{data.pm25}</div>
         </div>
 
         {/* SO₂ */}
         <div className="flex flex-col items-center">
-          <div className="text-sm text-gray-300">SO₂</div>
+          <div className="text-sm">SO₂</div>
           <div className="text-xl font-semibold">{data.so2}</div>
         </div>
 
         {/* NO₂ */}
         <div className="flex flex-col items-center">
-          <div className="text-sm text-gray-300">NO₂</div>
+          <div className="text-sm">NO₂</div>
           <div className="text-xl font-semibold">{data.no2}</div>
         </div>
 
         {/* O₃ */}
         <div className="flex flex-col items-center">
-          <div className="text-sm text-gray-300">O₃</div>
+          <div className="text-sm">O₃</div>
           <div className="text-xl font-semibold">{data.o3}</div>
         </div>
       </div>

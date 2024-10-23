@@ -10,7 +10,7 @@ import WeatherCard from "@/components/WeatherCard/WeatherCard";
 //   { type: "thunder", label: "Thunder" },
 // ];
 
-const TemperaturePage = ({ isNight }) => {
+const TemperaturePage = ({ isNight, weatherData }) => {
   const [timeOfDay, setTimeOfDay] = useState("");
   const name = "John"; // Replace with dynamic user name if needed
 
@@ -27,42 +27,61 @@ const TemperaturePage = ({ isNight }) => {
     container: isNight ? "bg-white/20" : "bg-white/30",
   };
 
+  const kelvinToCelsius = (kelvin) => (kelvin - 273.15).toFixed(1);
+
   return (
     <div className="relative min-h-[500px] flex justify-center items-center ml-40">
-      {/* Left-end center content */}
       <div className="absolute left-10 flex flex-col justify-center items-start text-white">
-        <h1 className={`${themeClasses.text} text-5xl font-bold`}>{`${timeOfDay}, ${name}`}</h1>
-        <p className={`${themeClasses.text} mt-2 text-lg`}>Here's your weather update for the day.</p>
-        {/* Weather details box */}
-        <div className={`${themeClasses.text} mt-6 bg-white/30 backdrop-blur-md p-6 rounded-lg shadow-md bottom-0`}>
+        <h1
+          className={`${themeClasses.text} text-5xl font-bold`}
+        >{`${timeOfDay}, ${name}`}</h1>
+        <p className={`${themeClasses.text} mt-2 text-lg`}>
+          Here's your weather update for the day.
+        </p>
+        <div
+          className={`${themeClasses.text} mt-6 bg-white/30 backdrop-blur-md p-6 rounded-lg shadow-md bottom-0`}
+        >
           <div className="flex justify-between space-x-8 text-center gap-x-3">
             <div>
               <p className="font-semibold">Feels Like</p>
-              <p className="text-lg">25°C</p>
+              <p className="text-lg">
+                {weatherData?.main?.feels_like
+                  ? kelvinToCelsius(weatherData.main.feels_like)
+                  : "--"}
+                °C
+              </p>
             </div>
             <div>
               <p className="font-semibold">Humidity</p>
-              <p className="text-lg">60%</p>
+              <p className="text-lg">{weatherData?.main?.humidity || "--"}%</p>
             </div>
             <div>
               <p className="font-semibold">Wind Speed</p>
-              <p className="text-lg">15 km/h</p>
+              <p className="text-lg">{weatherData?.wind?.speed || "--"} km/h</p>
             </div>
             <div>
               <p className="font-semibold">Pressure</p>
-              <p className="text-lg">1015 hPa</p>
+              <p className="text-lg">
+                {weatherData?.main?.pressure || "--"} hPa
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Weather card on the right-end center */}
       <div className="absolute right-36 flex justify-center items-center">
         <WeatherCard
-          temperature={23.5}
-          weatherCode="11d"
-          weatherType={"Haze"}
-          currentWeather={"sun"}
+          temperature={
+            weatherData?.main?.temp
+              ? kelvinToCelsius(weatherData.main.temp)
+              : "--"
+          }
+          weatherCode={weatherData?.weather?.[0]?.icon || "01d"}
+          weatherType={weatherData?.weather?.[0]?.main || "Unknown"}
+          currentWeather={
+            weatherData?.weather?.[0]?.main?.toLowerCase() || "sun"
+          }
+          city={weatherData?.name || "Unknown"}
         />
       </div>
     </div>

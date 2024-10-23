@@ -21,7 +21,6 @@ export const url = {
   airPollution(lat, lon) {
     return `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}`;
   },
-  reverseGeo(lat, lon) {
-    return `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1`;
-  },
 };
+
+

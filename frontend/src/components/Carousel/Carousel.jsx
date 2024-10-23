@@ -1,5 +1,5 @@
 import React from "react";
-import "./Carousel.css";
+import "#/Carousel.css";
 import cities from "../cities/cities.js";
 
 const Carousel = ({ isNight, currentCity, handleCityClick }) => {

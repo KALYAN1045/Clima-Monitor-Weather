@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Sun,
-  Cloud,
-  CloudRain,
-  Wind,
-  CloudFog,
-  CloudLightning,
-  MapPin,
-} from "lucide-react";
-import "./WeatherCard.css"; // Make sure this CSS file is in place for any additional styling
+import { Sun, Cloud, MapPin } from "lucide-react";
+import "#/WeatherCard.css"; // Make sure this CSS file is in place for any additional styling
 
 const WeatherCard = ({
   temperature,
   currentWeather,
   weatherType,
   weatherCode,
+  city,
 }) => {
   // Fetch the weather icon from OpenWeatherMap using current weather code
   const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherCode}@2x.png`;
@@ -34,7 +27,7 @@ const WeatherCard = ({
     switch (type) {
       case "sun":
         return "bg-gradient-to-br from-blue-400 to-blue-200";
-      case "cloud":
+      case "clouds":
         return "bg-gradient-to-br from-gray-400 to-gray-200";
       case "rain":
         return "bg-gradient-to-br from-blue-600 to-blue-400";
@@ -42,6 +35,8 @@ const WeatherCard = ({
         return "bg-gradient-to-br from-gray-500 to-gray-300";
       case "mist":
         return "bg-gradient-to-br from-gray-600 to-gray-600";
+      case "haze":
+        return "bg-gradient-to-br from-gray-600 to-gray-100";
       case "thunder":
         return "bg-gradient-to-br from-gray-700 to-gray-500";
       default:
@@ -54,7 +49,7 @@ const WeatherCard = ({
       {/* Weather Display */}
       <div
         className={`relative w-64 h-72 rounded-lg shadow-2xl overflow-hidden transition-all duration-500 bg-gradient-to-br ${getBackgroundColor(
-          currentWeather
+          currentWeather.toLowerCase()
         )}`}
       >
         {/* Temperature Display */}
@@ -74,7 +69,7 @@ const WeatherCard = ({
         {/* Location */}
         <div className="absolute bottom-4 left-4 flex items-center text-black z-10">
           <MapPin className="w-4 h-4 mr-2" />
-          <span className="text-lg">Bangalore, India</span>
+          <span className="text-lg">{city}, India</span>
         </div>
 
         {/* Weather Code Icon (if provided) */}
@@ -103,7 +98,7 @@ const WeatherCard = ({
           {/* Cloud Animation */}
           <div
             className={`absolute inset-0 transition-opacity duration-500 ${
-              currentWeather === "cloud" ? "opacity-100" : "opacity-0"
+              currentWeather === "clouds" ? "opacity-100" : "opacity-0"
             }`}
           >
             {[...Array(6)].map((_, i) => (
@@ -204,6 +199,28 @@ const WeatherCard = ({
               <div
                 key={i}
                 className="absolute w-full h-12 bg-white/50 blur-md"
+                style={{
+                  top: `${i * 20}%`,
+                  animationName: "mistFlow",
+                  animationDuration: `${8 + i * 2}s`,
+                  animationTimingFunction: "ease-in-out",
+                  animationIterationCount: "infinite",
+                  animationDelay: `${i * 1}s`,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Haze Animation */}
+          <div
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              currentWeather === "haze" ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-full h-12 bg-amber-800/50 blur-md"
                 style={{
                   top: `${i * 20}%`,
                   animationName: "mistFlow",

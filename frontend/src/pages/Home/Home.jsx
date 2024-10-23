@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
-import "./Home.css";
+import React, { useEffect, useState, useMemo } from "react";
+import "#/Home.css";
 import Scenario from "@/components/Scenario/scenario";
 import Carousel from "@/components/Carousel/Carousel";
 import DayNightToggle from "@/components/DayNightToggle/DayNightToggle";
 import SunAnimation from "@/components/SunAnimation/SunAnimation";
 import VerticalSlider from "@/components/VerticalSlider/VerticalSlider";
-import CalendarPage from "../CalendarPage/CalendarPage";
-import TemperaturePage from "../TemperaturePage/TemperaturePage";
-import AlertsPage from "../AlertsPage/AlertsPage";
+const ForecastPage = React.lazy(() => import("../ForecastPage/ForecastPage"));
+const TemperaturePage = React.lazy(() =>
+  import("../TemperaturePage/TemperaturePage")
+);
+const AlertsPage = React.lazy(() => import("../AlertsPage/AlertsPage"));
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
@@ -20,44 +22,91 @@ const Home_page = () => {
   const [isNight, setIsNight] = useState(null);
   const [currentCity, setCurrentCity] = useState("Delhi");
   const [selectedOption, setSelectedOption] = useState(1);
+  const [weatherData, setWeatherData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const options = [
-    {
-      icon: <CalendarIcon isNight={isNight} />,
-      label: "Previous Days",
-      page: <CalendarPage isNight={isNight} />,
-    },
-    {
-      icon: <TemperatureIcon isNight={isNight} />,
-      label: "Temperature",
-      page: <TemperaturePage isNight={isNight} />,
-    },
-    {
-      icon: <AlertIcon isNight={isNight} />,
-      label: "Alerts",
-      page: <AlertsPage isNight={isNight} />,
-    },
-  ];
+  const API_KEY = import.meta.env.VITE_APP_OPEN_API;
+
+  const fetchWeather = async (currentCity) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=${API_KEY}`
+      );
+      const data = await response.json();
+      setWeatherData(data);
+      console.log('Weather data updated:', data);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWeather(currentCity);
+
+    const intervalId = setInterval(() => {
+      fetchWeather(currentCity);
+    }, 300000);
+
+    return () => clearInterval(intervalId);
+  }, [currentCity]);
+
+  const options = useMemo(
+    () => [
+      {
+        icon: <CalendarIcon isNight={isNight} />,
+        label: "Previous Days",
+        page: <ForecastPage isNight={isNight} />,
+      },
+      {
+        icon: <TemperatureIcon isNight={isNight} />,
+        label: "Temperature",
+        page: (
+          <TemperaturePage 
+            isNight={isNight} 
+            weatherData={weatherData} 
+            isLoading={isLoading}
+            currentCity={currentCity} 
+          />
+        ),
+      },
+      {
+        icon: <AlertIcon isNight={isNight} />,
+        label: "Alerts",
+        page: <AlertsPage isNight={isNight} />,
+      },
+    ],
+    [isNight, weatherData, isLoading, currentCity]
+  );
 
   const pageVariants = {
-    initial: (direction) => ({
-      x: direction > 0 ? 1000 : -1000,
+    initial: {
       opacity: 0,
-    }),
-    animate: {
       x: 0,
+      scale: 0.98,
+    },
+    animate: {
       opacity: 1,
+      x: 0,
+      scale: 1,
       transition: {
-        type: "spring",
-        stiffness: 30,
-        damping: 15,
+        duration: 0.2,
+        ease: "easeOut",
       },
     },
-    exit: (direction) => ({
-      x: direction < 0 ? 1000 : -1000,
+    exit: {
       opacity: 0,
-    }),
+      x: 0,
+      scale: 0.98,
+      transition: {
+        duration: 0.15,
+        ease: "easeIn",
+      },
+    },
   };
+
   useEffect(() => {
     const isItNight = () => {
       const now = new Date();
@@ -127,7 +176,11 @@ const Home_page = () => {
         <SunAnimation isNight={isNight} setIsNight={setIsNight} />
 
         {/* City Carousel */}
-        <Carousel isNight={isNight} currentCity={currentCity} handleCityClick={handleCityClick} />
+        <Carousel
+          isNight={isNight}
+          currentCity={currentCity}
+          handleCityClick={handleCityClick}
+        />
 
         <VerticalSlider
           options={options}

@@ -1,8 +1,8 @@
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Cloud, CloudSun, Sun } from 'lucide-react';
+import React from "react";
+import { Cloud, CloudSun, Sun } from "lucide-react";
+import "#/transition.css";
 
-const FiveDayForecast = () => {
+const FiveDayForecast = ({ containerClass }) => {
   const sampleForecast = [
     { day: "Thursday", date: "23 Oct", temp: 26, weather: "cloudy" },
     { day: "Friday", date: "24 Oct", temp: 25, weather: "cloudy" },
@@ -22,27 +22,27 @@ const FiveDayForecast = () => {
         return <Cloud className="w-8 h-8 text-gray-300" />;
     }
   };
-
+  
   return (
     <>
-      <h2 className="text-white text-xl font-semibold mb-6">5 Days Forecast</h2>
+      <h2 className={`${containerClass}-text text-xl font-semibold mb-6`}>
+        5 Days Forecast
+      </h2>
       <div className="space-y-6">
         {sampleForecast.map((day) => (
           <div
             key={day.date}
-            className="flex items-center justify-between bg-blue-900 p-4 rounded-lg"
+            className={`${containerClass} flex items-center justify-between p-4 rounded-lg`}
           >
             <div className="flex items-center gap-3">
               {getWeatherIcon(day.weather)}
-              <span className="text-white text-2xl font-medium">
-                {day.temp}°
-              </span>
+              <span className="text-2xl font-medium">{day.temp}°</span>
             </div>
             <div className="w-24 text-center">
-              <span className="text-gray-300 text-sm">{day.date}</span>
+              <span className="font-medium text-sm">{day.date}</span>
             </div>
             <div className="w-24 text-right">
-              <span className="text-gray-300 text-sm">{day.day}</span>
+              <span className="font-medium text-sm">{day.day}</span>
             </div>
           </div>
         ))}
