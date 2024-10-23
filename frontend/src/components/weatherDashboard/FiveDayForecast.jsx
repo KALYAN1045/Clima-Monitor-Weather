@@ -106,7 +106,7 @@ const FiveDayForecast = ({ containerClass, forecastData }) => {
 
   return (
     <>
-      <h2 className={`${containerClass}-text text-xl font-semibold mb-4`}>
+      <h2 className={`${containerClass}-text text-xl font-bold mb-4`}>
         5 Days Forecast
       </h2>
       <div className="space-y-4">

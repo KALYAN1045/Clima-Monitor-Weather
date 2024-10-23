@@ -21,6 +21,119 @@ import mistNight from "$/weather_icons/50n.png";
 
 import "#/WeatherCard.css"; // Make sure this CSS file is in place for any additional styling
 
+const HazeAnimation = () => {
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      {/* Base haze layer */}
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-700/30 to-gray-700/30" />
+
+      {/* Animated haze particles */}
+      <div className="absolute inset-0">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-full opacity-40"
+            style={{
+              height: `${Math.random() * 8 + 4}rem`,
+              left: `${(i % 4) * 25}%`,
+              top: `${Math.floor(i / 4) * 33}%`,
+              animation: `
+                hazeFloat ${10 + Math.random() * 5}s infinite ease-in-out ${
+                i * 0.5
+              }s,
+                hazeOpacity ${7 + Math.random() * 4}s infinite ease-in-out ${
+                i * 0.3
+              }s
+              `,
+            }}
+          >
+            <div className="w-full h-full bg-amber-800/30 blur-xl rounded-full" />
+          </div>
+        ))}
+      </div>
+
+      {/* Moving light rays */}
+      <div className="absolute inset-0">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1/2 h-full opacity-10"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)",
+              animation: `lightRay ${15 + i * 5}s infinite linear ${i * 2}s`,
+              transform: "skewX(-20deg)",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Darker patches */}
+      <div className="absolute inset-0">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1/3 opacity-30"
+            style={{
+              height: `${Math.random() * 10 + 10}rem`,
+              left: `${(i % 3) * 33}%`,
+              top: `${Math.floor(i / 3) * 50}%`,
+              animation: `hazePatch ${
+                12 + Math.random() * 8
+              }s infinite ease-in-out ${i * 0.7}s`,
+            }}
+          >
+            <div className="w-full h-full bg-gray-900/20 blur-xl rounded-full" />
+          </div>
+        ))}
+      </div>
+
+      <style jsx>{`
+        @keyframes hazeFloat {
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          50% {
+            transform: translateX(100px);
+          }
+        }
+
+        @keyframes hazeOpacity {
+          0%,
+          100% {
+            opacity: 0.4;
+          }
+          50% {
+            opacity: 0.6;
+          }
+        }
+
+        @keyframes lightRay {
+          from {
+            transform: translateX(-100%) skewX(-20deg);
+          }
+          to {
+            transform: translateX(300%) skewX(-20deg);
+          }
+        }
+
+        @keyframes hazePatch {
+          0%,
+          100% {
+            transform: translateY(0) scale(1);
+            opacity: 0.3;
+          }
+          50% {
+            transform: translateY(30px) scale(1.2);
+            opacity: 0.4;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 const WeatherCard = ({
   temperature,
   currentWeather,
@@ -28,7 +141,6 @@ const WeatherCard = ({
   weatherCode,
   city,
 }) => {
-  
   const weatherIcons = {
     "01d": clearDay,
     "01n": clearNight,
@@ -256,20 +368,7 @@ const WeatherCard = ({
               currentWeather === "haze" ? "opacity-100" : "opacity-0"
             }`}
           >
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-full h-12 bg-amber-800/50 blur-md"
-                style={{
-                  top: `${i * 20}%`,
-                  animationName: "mistFlow",
-                  animationDuration: `${8 + i * 2}s`,
-                  animationTimingFunction: "ease-in-out",
-                  animationIterationCount: "infinite",
-                  animationDelay: `${i * 1}s`,
-                }}
-              />
-            ))}
+            <HazeAnimation />
           </div>
 
           {/* Thunderstorm with Lightning */}

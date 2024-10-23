@@ -102,7 +102,7 @@ const DailyForecast = ({ containerClass, forecastData }) => {
 
   return (
     <>
-      <h2 className={`${containerClass}-text text-xl font-semibold mb-2`}>
+      <h2 className={`${containerClass}-text text-xl font-bold mb-2`}>
         Today at
       </h2>
       <div ref={scrollRef} className="overflow-x-auto scroll-container">
@@ -131,7 +131,7 @@ const DailyForecast = ({ containerClass, forecastData }) => {
                 <img
                   src={Arrow}
                   alt="Wind Direction"
-                  className="w-5 h-5"
+                  className="w-7 h-7"
                   style={{ transform: `rotate(${data.windDeg}deg)` }} // Rotate the arrow according to wind direction
                 />
                 <span className=" text-lg">{data.wind} Km/h</span>
