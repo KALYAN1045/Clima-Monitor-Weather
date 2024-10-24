@@ -79,21 +79,17 @@ function scheduleEndOfDaySummary() {
   const timeUntilMidnight = nextMidnight - now;
   setTimeout(() => {
     weatherService.storeEndOfDaySummary();
-    // Schedule it to run again at midnight every day
-    setInterval(weatherService.storeEndOfDaySummary, 24 * 60 * 60 * 1000); // Every 24 hours
+    setInterval(weatherService.storeEndOfDaySummary, 24 * 60 * 60 * 1000); 
   }, timeUntilMidnight);
 }
 
-// Use weather routes for API-related routes
 app.use("/api/weather", weatherRoutes);
 app.use("/api/alerts", alertRoutes);
 
-// Basic route to check if the server is running
 app.get("/", (req, res) => {
   res.send("Weather API is running...");
 });
 
-// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
