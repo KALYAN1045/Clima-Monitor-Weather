@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import "#/transition.css"
+import "#/transition.css";
 import {
   Select,
   SelectContent,
@@ -23,7 +23,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import axios from "axios";
 
-const AlertsPage = ({ currentCity = "Delhi" }) => {
+const AlertsPage = ({ isNight, currentCity = "Delhi" }) => {
   const [email, setEmail] = useState("");
   const [alertName, setAlertName] = useState("");
   const [temperature, setTemperature] = useState("");
@@ -33,7 +33,7 @@ const AlertsPage = ({ currentCity = "Delhi" }) => {
   const [weatherCondition, setWeatherCondition] = useState("");
   const [existingAlerts, setExistingAlerts] = useState([]);
   const [noAlertsMessage, setNoAlertsMessage] = useState("");
-
+  const containerClass = isNight ? "dark" : "light";
   const API_BASE_URL = import.meta.env.VITE_APP_API;
 
   // Function to fetch alerts
@@ -123,8 +123,10 @@ const AlertsPage = ({ currentCity = "Delhi" }) => {
   };
 
   return (
-    <div className="absolute top-5 lg:w-[1400px] lg:h-[500px] page-container bg-base-light/55 sm:md:ml-20 p-6">
-      <h1 className="text-3xl font-bold mb-6">
+    <div
+      className= "absolute top-5 lg:w-[1400px] lg:h-[500px] page-container  sm:md:ml-20 p-6"
+    >
+      <h1 className={`${containerClass}-text text-3xl font-bold mb-6`}>
         Weather Alerts for {currentCity}
       </h1>
 
