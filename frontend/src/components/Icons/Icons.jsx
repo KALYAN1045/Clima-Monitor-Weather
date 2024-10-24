@@ -52,3 +52,23 @@ export const AlertIcon = ({ isNight }) => (
     <line x1="12" y1="16" x2="12" y2="16" />
   </svg>
 );
+
+
+export const SummaryIcon = ({ isNight }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isNight ? "#ffffff" : "#794144"} // Apply stroke color based on isNight
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="3" y="4" width="18" height="16" rx="2" ry="2" />
+    <line x1="8" y1="9" x2="16" y2="9" />
+    <line x1="8" y1="13" x2="16" y2="13" />
+    <line x1="8" y1="17" x2="16" y2="17" />
+  </svg>
+);

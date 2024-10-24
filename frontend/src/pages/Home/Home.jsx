@@ -6,11 +6,19 @@ import DayNightToggle from "@/components/DayNightToggle/DayNightToggle";
 import SunAnimation from "@/components/SunAnimation/SunAnimation";
 import VerticalSlider from "@/components/VerticalSlider/VerticalSlider";
 import { AnimatePresence, motion } from "framer-motion";
-import { TemperatureIcon, CalendarIcon, AlertIcon } from "@/components/Icons/Icons";
+import {
+  TemperatureIcon,
+  CalendarIcon,
+  AlertIcon,
+  SummaryIcon,
+} from "@/components/Icons/Icons";
+import SummaryPage from "../SummaryPage/Summary";
 
 // Lazy loaded components
 const ForecastPage = React.lazy(() => import("../ForecastPage/ForecastPage"));
-const TemperaturePage = React.lazy(() => import("../TemperaturePage/TemperaturePage"));
+const TemperaturePage = React.lazy(() =>
+  import("../TemperaturePage/TemperaturePage")
+);
 const AlertsPage = React.lazy(() => import("../AlertsPage/AlertsPage"));
 
 // Loading fallback component
@@ -61,7 +69,7 @@ const Home_page = ({ userPreferences }) => {
         label: "Previous Days",
         page: (
           <Suspense fallback={<LoadingFallback />}>
-            <ForecastPage isNight={isNight} weatherData={weatherData}/>
+            <ForecastPage isNight={isNight} weatherData={weatherData} />
           </Suspense>
         ),
       },
@@ -75,6 +83,15 @@ const Home_page = ({ userPreferences }) => {
               weatherData={weatherData}
               userPreferences={userPreferences}
             />
+          </Suspense>
+        ),
+      },
+      {
+        icon: <SummaryIcon isNight={isNight} />,
+        label: "Summary",
+        page: (
+          <Suspense fallback={<LoadingFallback />}>
+            <SummaryPage isNight={isNight} />
           </Suspense>
         ),
       },

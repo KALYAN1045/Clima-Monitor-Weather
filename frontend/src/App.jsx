@@ -29,7 +29,7 @@ function App() {
       <Alert className="max-w-md w-full bg-blue-50 border-blue-200">
         <Clock className="h-4 w-4" />
         <AlertDescription className="flex items-center gap-2">
-          <span className="font-semibold">Pro Tip:</span> Don't forget to check out the DarkMode (Spend 4hrs on it alone)
+          <span className="font-semibold">Tip:</span> Check out the DarkMode (Spend 4hrs on it alone)
         </AlertDescription>
       </Alert>
 
