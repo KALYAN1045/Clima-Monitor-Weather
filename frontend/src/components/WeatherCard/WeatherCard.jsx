@@ -21,11 +21,114 @@ import mistNight from "$/weather_icons/50n.png";
 
 import "#/WeatherCard.css"; // Make sure this CSS file is in place for any additional styling
 
+const SmokeAnimation = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Smoke particles */}
+      {[...Array(15)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute"
+          style={{
+            width: `${Math.random() * 40 + 20}px`,
+            height: `${Math.random() * 40 + 20}px`,
+            left: `${(i % 5) * 25}%`,
+            bottom: "-20px",
+            animation: `
+              smokeRise ${8 + Math.random() * 7}s infinite ease-out ${i * 0.3}s,
+              smokeDrift ${12 + Math.random() * 5}s infinite ease-in-out ${
+              i * 0.5
+            }s,
+              smokeExpand ${10 + Math.random() * 5}s infinite ease-out ${
+              i * 0.4
+            }s,
+              smokeFade ${7 + Math.random() * 4}s infinite ease-out ${i * 0.3}s
+            `,
+          }}
+        >
+          <div className="w-full h-full bg-gray-600/30 rounded-full blur-xl" />
+        </div>
+      ))}
+
+      {/* Additional swirling smoke layers */}
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={`swirl-${i}`}
+          className="absolute w-full h-32 bottom-0"
+          style={{
+            animation: `smokeSwirl ${15 + i * 5}s infinite ease-in-out ${
+              i * 2
+            }s`,
+            opacity: 0.2,
+          }}
+        >
+          <div className="w-full h-full bg-gradient-to-t from-gray-700 to-transparent blur-lg" />
+        </div>
+      ))}
+
+      <style jsx>{`
+        @keyframes smokeRise {
+          0% {
+            transform: translateY(0) scale(1);
+          }
+          100% {
+            transform: translateY(-300px) scale(2);
+          }
+        }
+
+        @keyframes smokeDrift {
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          50% {
+            transform: translateX(${Math.random() > 0.5 ? "" : "-"}100px);
+          }
+        }
+
+        @keyframes smokeExpand {
+          0% {
+            transform: scale(1);
+          }
+          100% {
+            transform: scale(3);
+          }
+        }
+
+        @keyframes smokeFade {
+          0% {
+            opacity: 0;
+          }
+          20% {
+            opacity: 0.4;
+          }
+          100% {
+            opacity: 0;
+          }
+        }
+
+        @keyframes smokeSwirl {
+          0%,
+          100% {
+            transform: translateX(0) skewX(0);
+          }
+          25% {
+            transform: translateX(40px) skewX(-5deg);
+          }
+          75% {
+            transform: translateX(-40px) skewX(5deg);
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 const HazeAnimation = () => {
   return (
     <div className="relative w-full h-full overflow-hidden">
       {/* Base haze layer */}
-      <div className="absolute inset-0 bg-gradient-to-b from-amber-700/30 to-gray-700/30" />
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-700/30 to-white-700/30" />
 
       {/* Animated haze particles */}
       <div className="absolute inset-0">
@@ -185,6 +288,8 @@ const WeatherCard = ({
         return "bg-gradient-to-br from-gray-500 to-gray-300";
       case "mist":
         return "bg-gradient-to-br from-gray-600 to-gray-600";
+      case "smoke":
+        return "bg-gradient-to-br from-gray-800 to-gray-600";
       case "haze":
         return "bg-gradient-to-br from-gray-600 to-gray-100";
       case "thunderstorm":
@@ -369,6 +474,14 @@ const WeatherCard = ({
             }`}
           >
             <HazeAnimation />
+          </div>
+
+          <div
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              currentWeather === "smoke" ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <SmokeAnimation />
           </div>
 
           {/* Thunderstorm with Lightning */}

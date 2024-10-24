@@ -91,7 +91,11 @@ const Home_page = ({ userPreferences }) => {
         label: "Summary",
         page: (
           <Suspense fallback={<LoadingFallback />}>
-            <SummaryPage isNight={isNight} />
+            <SummaryPage
+              isNight={isNight}
+              currentCity={currentCity}
+              userPreferences={userPreferences}
+            />
           </Suspense>
         ),
       },
@@ -100,7 +104,7 @@ const Home_page = ({ userPreferences }) => {
         label: "Alerts",
         page: (
           <Suspense fallback={<LoadingFallback />}>
-            <AlertsPage isNight={isNight} />
+            <AlertsPage isNight={isNight} currentCity={currentCity} />
           </Suspense>
         ),
       },

@@ -45,11 +45,9 @@ const weatherIcons = {
 
 const DailyForecast = ({ containerClass, forecastData }) => {
   // Process forecast data from API
-  console.log("Raw forecastData:", forecastData);
   const transformForecastData = (data) => {
     // Check if data and data.list exist
     if (!data || !data.list || !Array.isArray(data.list)) {
-      console.log("Invalid data structure:", data);
       return [];
     }
 
@@ -89,7 +87,6 @@ const DailyForecast = ({ containerClass, forecastData }) => {
 
   // Transform the forecast data
   const weatherData = transformForecastData(forecastData);
-  console.log("Transformed weatherData:", weatherData);
   const getWeatherIcon = (iconCode) => {
     const icon = weatherIcons[iconCode];
     return (

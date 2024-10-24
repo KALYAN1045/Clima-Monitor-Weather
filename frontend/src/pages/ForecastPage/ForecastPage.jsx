@@ -4,13 +4,6 @@ import "#/transition.css";
 import { convertToIST } from "@/services/converttoIST";
 import { useForecastData } from "@/hooks/useForecastData";
 
-// Lightweight loading component with minimal animation
-const LoadingPlaceholder = memo(() => (
-  <Card className="w-full h-48 bg-base-light/30">
-    <div className="animate-pulse-subtle h-full" />
-  </Card>
-));
-
 // Chunk components more granularly
 const FiveDayForecast = lazy(() =>
   import("@/components/weatherDashboard/FiveDayForecast").then((module) => ({
@@ -53,12 +46,21 @@ const preloadComponents = () => {
 };
 
 const ForecastPage = ({ isNight, weatherData }) => {
+  // Lightweight loading component with minimal animation
+  const LoadingPlaceholder = memo(() => (
+    <Card className="w-full h-full bg-base-light/30">
+      <div className="animate-pulse-subtle h-full w-full rounded-lg" />
+    </Card>
+  ));
+
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showContent, setShowContent] = useState(false); // New state for delayed content
 
   // Trigger preload on mount
   React.useEffect(() => {
     preloadComponents();
     setIsLoaded(true);
+    setShowContent(true);
   }, []);
 
   // Memoize data to prevent unnecessary re-renders
@@ -116,25 +118,35 @@ const ForecastPage = ({ isNight, weatherData }) => {
 
   // Optimize rendering with transition groups
   return (
-    <div className="absolute top-5 page-container bg-base-light/55 sm:md:ml-20 p-6">
+    <div className="absolute top-5 lg:w-[1400px] lg:h-[500px] page-container bg-base-light/55 sm:md:ml-20 p-6">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1800px] mx-auto">
         {/* Prioritize loading of main forecast */}
         <div className="lg:col-span-4">
           <Suspense fallback={<LoadingPlaceholder />}>
-            {isLoaded && <FiveDayForecast containerClass={containerClass} forecastData={forecastData} />}
+            {showContent && (
+              <FiveDayForecast
+                containerClass={containerClass}
+                forecastData={forecastData}
+              />
+            )}
           </Suspense>
         </div>
 
         {/* Defer loading of secondary content */}
         <div className="lg:col-span-8 grid grid-cols-1 gap-3">
           <Suspense fallback={<LoadingPlaceholder />}>
-            {isLoaded && <DailyForecast containerClass={containerClass} forecastData={forecastData}/>}
+            {showContent && (
+              <DailyForecast
+                containerClass={containerClass}
+                forecastData={forecastData}
+              />
+            )}
           </Suspense>
 
           {/* Load supplementary cards last */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Suspense fallback={<LoadingPlaceholder />}>
-              {isLoaded && (
+              {showContent && (
                 <AirQualityCard
                   data={airQualityData}
                   containerClass={containerClass}
@@ -142,7 +154,7 @@ const ForecastPage = ({ isNight, weatherData }) => {
               )}
             </Suspense>
             <Suspense fallback={<LoadingPlaceholder />}>
-              {isLoaded && (
+              {showContent && (
                 <SunriseSunsetCard
                   data={sunriseSunsetData}
                   containerClass={containerClass}

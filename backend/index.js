@@ -1,13 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const weatherRoutes = require("./routes/weatherRoute");
+const alertRoutes = require("./routes/alertRoutes");
 const WeatherService = require("./services/weatherService");
 require("dotenv").config();
+const cors = require("cors");
 
 // Initialize express app
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGO_URI;
+app.use(cors());
+app.use(express.json());
 
 // Connect to MongoDB
 mongoose
@@ -82,6 +86,7 @@ function scheduleEndOfDaySummary() {
 
 // Use weather routes for API-related routes
 app.use("/api/weather", weatherRoutes);
+app.use("/api/alerts", alertRoutes);
 
 // Basic route to check if the server is running
 app.get("/", (req, res) => {
