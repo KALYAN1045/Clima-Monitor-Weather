@@ -27,80 +27,74 @@ class WeatherService {
 
       const weatherData = response.data;
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset hours to get only the date
+      today.setHours(0, 0, 0, 0);
 
-      // Find or create today's record
-      let record = await Weather.findOne({ cityId, date: today });
+      // Find existing record by cityName and today's date
+      let record = await Weather.findOne({
+        cityName,
+        date: today,
+      });
 
       if (!record) {
+        // Create new record if none exists for today
         record = new Weather({
-          cityId,
           cityName,
           date: today,
           daily: {
             minTemp: weatherData.main.temp,
             maxTemp: weatherData.main.temp,
-            avgTemp: weatherData.main.temp.toFixed(1),
+            avgTemp: weatherData.main.temp,
             dominantCondition: weatherData.weather[0].main,
             readings: 1,
-            conditionCount: {
-              [weatherData.weather[0].main]: 1,
-            },
+            conditionCount: new Map([[weatherData.weather[0].main, 1]]),
           },
-          weekly: [], // Initialize empty weekly array if new record
+          weekly: [], // Initialize empty weekly array
         });
+        await record.save();
       } else {
-        // Ensure `record.daily` is initialized if it's null or undefined
-        if (!record.daily) {
-          record.daily = {
-            minTemp: weatherData.main.temp,
-            maxTemp: weatherData.main.temp,
-            avgTemp: weatherData.main.temp.toFixed(1),
-            dominantCondition: weatherData.weather[0].main,
-            readings: 1,
-            conditionCount: {
-              [weatherData.weather[0].main]: 1,
-            },
-          };
-        } else {
-          // Update daily statistics
-          const newReadings = record.daily.readings + 1;
+        // Update existing record's daily data
+        const newReadings = record.daily.readings + 1;
+        const currentTemp = weatherData.main.temp;
 
-          // Update avgTemp
-          record.daily.avgTemp =
-            (record.daily.avgTemp * record.daily.readings +
-              weatherData.main.temp) /
-            newReadings;
+        // Prepare the update data
+        const updateData = {
+          "daily.readings": newReadings,
+          "daily.avgTemp": (
+            (record.daily.avgTemp * record.daily.readings + currentTemp) /
+            newReadings
+          ).toFixed(1),
+          "daily.minTemp": Math.min(record.daily.minTemp, currentTemp),
+          "daily.maxTemp": Math.max(record.daily.maxTemp, currentTemp),
+        };
 
-          // Update minTemp and maxTemp if necessary
-          record.daily.minTemp = Math.min(
-            record.daily.minTemp,
-            weatherData.main.temp
-          );
-          record.daily.maxTemp = Math.max(
-            record.daily.maxTemp,
-            weatherData.main.temp
-          );
+        // Update condition count
+        const currentCondition = weatherData.weather[0].main;
+        const conditionCount = record.daily.conditionCount || new Map();
+        conditionCount.set(
+          currentCondition,
+          (conditionCount.get(currentCondition) || 0) + 1
+        );
+        updateData["daily.conditionCount"] = conditionCount;
 
-          // Update dominant condition
-          const currentCondition = weatherData.weather[0].main;
-          record.daily.conditionCount[currentCondition] =
-            (record.daily.conditionCount[currentCondition] || 0) + 1;
-
-          // Recalculate dominantCondition
-          record.daily.dominantCondition = Object.keys(
-            record.daily.conditionCount
-          ).reduce((a, b) =>
-            record.daily.conditionCount[a] > record.daily.conditionCount[b]
-              ? a
-              : b
-          );
-
-          record.daily.readings = newReadings;
+        // Find the most frequent condition
+        let maxCount = 0;
+        let dominantCondition = currentCondition;
+        for (const [condition, count] of conditionCount.entries()) {
+          if (count > maxCount) {
+            maxCount = count;
+            dominantCondition = condition;
+          }
         }
+        updateData["daily.dominantCondition"] = dominantCondition;
+
+        // Update the record
+        record = await Weather.findOneAndUpdate(
+          { _id: record._id },
+          { $set: updateData },
+          { new: true }
+        );
       }
 
-      await record.save();
       await this.checkAndSendAlerts(cityName, weatherData);
       return record;
     } catch (error) {
