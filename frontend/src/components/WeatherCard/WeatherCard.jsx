@@ -125,16 +125,23 @@ const SmokeAnimation = () => {
 };
 
 const HazeAnimation = () => {
+  // Leaf path variations for different leaf shapes
+  const leafTypes = [
+    "M0,10 Q5,0 10,10 Q15,20 10,20 Q5,20 0,10", // Simple leaf
+    "M0,10 C2,5 8,5 10,10 C12,15 8,18 5,20 C2,18 -2,15 0,10", // Curved leaf
+    "M0,10 Q8,0 16,10 Q8,20 0,10", // Oval leaf
+  ];
+
   return (
     <div className="relative w-full h-full overflow-hidden">
       {/* Base haze layer */}
-      <div className="absolute inset-0 bg-gradient-to-b from-amber-700/30 to-white-700/30" />
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-700/30 to-transparent" />
 
-      {/* Animated haze particles */}
+      {/* Animated haze/dust particles */}
       <div className="absolute inset-0">
         {[...Array(12)].map((_, i) => (
           <div
-            key={i}
+            key={`haze-${i}`}
             className="absolute w-full opacity-40"
             style={{
               height: `${Math.random() * 8 + 4}rem`,
@@ -155,11 +162,43 @@ const HazeAnimation = () => {
         ))}
       </div>
 
+      {/* Flying leaves */}
+      <div className="absolute inset-0">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={`leaf-${i}`}
+            className="absolute"
+            style={{
+              left: `-5%`,
+              top: `${Math.random() * 100}%`,
+              animation: `windLeaf ${6 + Math.random() * 4}s linear infinite ${
+                i * 0.5
+              }s`,
+            }}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              className="transform"
+              style={{
+                animation: `leafSpin ${2 + Math.random() * 2}s linear infinite`,
+                fill: `hsl(${120 + Math.random() * 40}, ${
+                  70 + Math.random() * 20
+                }%, ${40 + Math.random() * 20}%)`,
+              }}
+            >
+              <path d={leafTypes[i % leafTypes.length]} />
+            </svg>
+          </div>
+        ))}
+      </div>
+
       {/* Moving light rays */}
       <div className="absolute inset-0">
         {[...Array(3)].map((_, i) => (
           <div
-            key={i}
+            key={`ray-${i}`}
             className="absolute w-1/2 h-full opacity-10"
             style={{
               background:
@@ -168,26 +207,6 @@ const HazeAnimation = () => {
               transform: "skewX(-20deg)",
             }}
           />
-        ))}
-      </div>
-
-      {/* Darker patches */}
-      <div className="absolute inset-0">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1/3 opacity-30"
-            style={{
-              height: `${Math.random() * 10 + 10}rem`,
-              left: `${(i % 3) * 33}%`,
-              top: `${Math.floor(i / 3) * 50}%`,
-              animation: `hazePatch ${
-                12 + Math.random() * 8
-              }s infinite ease-in-out ${i * 0.7}s`,
-            }}
-          >
-            <div className="w-full h-full bg-gray-900/20 blur-xl rounded-full" />
-          </div>
         ))}
       </div>
 
@@ -212,6 +231,24 @@ const HazeAnimation = () => {
           }
         }
 
+        @keyframes windLeaf {
+          0% {
+            transform: translateX(0) translateY(0);
+          }
+          100% {
+            transform: translateX(120vw) translateY(50px);
+          }
+        }
+
+        @keyframes leafSpin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
         @keyframes lightRay {
           from {
             transform: translateX(-100%) skewX(-20deg);
@@ -220,22 +257,19 @@ const HazeAnimation = () => {
             transform: translateX(300%) skewX(-20deg);
           }
         }
-
-        @keyframes hazePatch {
-          0%,
-          100% {
-            transform: translateY(0) scale(1);
-            opacity: 0.3;
-          }
-          50% {
-            transform: translateY(30px) scale(1.2);
-            opacity: 0.4;
-          }
-        }
       `}</style>
     </div>
   );
 };
+
+// const weatherTypes = [
+//   { type: "sun", label: "Sunny" },
+//   { type: "cloud", label: "Cloudy" },
+//   { type: "rain", label: "Rainy" },
+//   { type: "wind", label: "Windy" },
+//   { type: "mist", label: "Misty" },
+//   { type: "thunder", label: "Thunder" },
+// ];
 
 const WeatherCard = ({
   temperature,
@@ -244,6 +278,7 @@ const WeatherCard = ({
   weatherCode,
   city,
 }) => {
+  currentWeather = "dust";
   const weatherIcons = {
     "01d": clearDay,
     "01n": clearNight,
@@ -278,7 +313,7 @@ const WeatherCard = ({
   // Function to get the background color based on the weather type
   const getBackgroundColor = (type) => {
     switch (type) {
-      case "sun":
+      case "clear":
         return "bg-gradient-to-br from-blue-400 to-blue-200";
       case "clouds":
         return "bg-gradient-to-br from-gray-400 to-gray-200";
@@ -290,7 +325,11 @@ const WeatherCard = ({
         return "bg-gradient-to-br from-gray-600 to-gray-600";
       case "smoke":
         return "bg-gradient-to-br from-gray-800 to-gray-600";
+      case "fog":
+        return "bg-gradient-to-br from-gray-800 to-gray-600";
       case "haze":
+        return "bg-gradient-to-br from-gray-600 to-gray-100";
+      case "dust":
         return "bg-gradient-to-br from-gray-600 to-gray-100";
       case "thunderstorm":
         return "bg-gradient-to-br from-gray-700 to-gray-500";
@@ -343,7 +382,7 @@ const WeatherCard = ({
           {/* Sunny Animation (unchanged) */}
           <div
             className={`absolute inset-0 transition-opacity duration-500 ${
-              currentWeather === "sun" ? "opacity-100" : "opacity-0"
+              currentWeather === "clear" ? "opacity-100" : "opacity-0"
             }`}
           >
             <div className="absolute top-14 right-[-170px] transform -translate-x-1/2">
@@ -383,7 +422,9 @@ const WeatherCard = ({
           {/* Rain Animation */}
           <div
             className={`absolute inset-0 transition-opacity duration-500 ${
-              currentWeather === "rain" ? "opacity-100" : "opacity-0"
+              currentWeather === "rain" || currentWeather == "drizzle"
+                ? "opacity-100"
+                : "opacity-0"
             }`}
           >
             {[...Array(20)].map((_, i) => (
@@ -401,47 +442,6 @@ const WeatherCard = ({
                   animationDelay: `${Math.random() * 2}s`,
                 }}
               />
-            ))}
-          </div>
-
-          {/* Wind Animation with Leaves */}
-          <div
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              currentWeather === "wind" ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute"
-                style={{
-                  left: `-5%`,
-                  top: `${Math.random() * 100}%`,
-                  animationName: "windLeaf",
-                  animationDuration: `${6 + Math.random() * 4}s`,
-                  animationTimingFunction: "linear",
-                  animationIterationCount: "infinite",
-                  animationDelay: `${i * 0.5}s`,
-                }}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  className="transform"
-                  style={{
-                    animationName: "leafSpin",
-                    animationDuration: `${2 + Math.random() * 2}s`,
-                    animationTimingFunction: "linear",
-                    animationIterationCount: "infinite",
-                    fill: `hsl(${120 + Math.random() * 40}, ${
-                      70 + Math.random() * 20
-                    }%, ${40 + Math.random() * 20}%)`,
-                  }}
-                >
-                  <path d={leafTypes[i % leafTypes.length]} />
-                </svg>
-              </div>
             ))}
           </div>
 
@@ -470,7 +470,9 @@ const WeatherCard = ({
           {/* Haze Animation */}
           <div
             className={`absolute inset-0 transition-opacity duration-500 ${
-              currentWeather === "haze" ? "opacity-100" : "opacity-0"
+              currentWeather === "haze" || currentWeather === "dust"
+                ? "opacity-100"
+                : "opacity-0"
             }`}
           >
             <HazeAnimation />
@@ -478,7 +480,9 @@ const WeatherCard = ({
 
           <div
             className={`absolute inset-0 transition-opacity duration-500 ${
-              currentWeather === "smoke" ? "opacity-100" : "opacity-0"
+              currentWeather === "smoke" || currentWeather === "fog"
+                ? "opacity-100"
+                : "opacity-0"
             }`}
           >
             <SmokeAnimation />

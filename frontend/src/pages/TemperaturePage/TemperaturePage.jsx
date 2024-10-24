@@ -1,11 +1,4 @@
-// const weatherTypes = [
-//   { type: "sun", label: "Sunny" },
-//   { type: "cloud", label: "Cloudy" },
-//   { type: "rain", label: "Rainy" },
-//   { type: "wind", label: "Windy" },
-//   { type: "mist", label: "Misty" },
-//   { type: "thunder", label: "Thunder" },
-// ];
+
 import React, { useEffect, useState } from "react";
 import WeatherCard from "@/components/WeatherCard/WeatherCard";
 import {
