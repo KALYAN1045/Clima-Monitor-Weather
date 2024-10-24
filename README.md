@@ -179,6 +179,9 @@ npm run dev
 
 ![image](https://github.com/user-attachments/assets/d2c4c431-397f-474c-8cca-f2621036dae0)
 
+![Screenshot 2024-10-25 003628](https://github.com/user-attachments/assets/7de879e7-7a65-4138-be69-6106bc39c028)
+
+
 
 
 
