@@ -1,10 +1,21 @@
 const axios = require("axios");
 const Weather = require("../models/weatherModel");
+const City = require("../models/alertModel");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 class WeatherService {
   constructor() {
     this.apiKey = process.env.OPENWEATHER_API_KEY;
+
+    // Nodemailer transporter configuration
+    this.transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER, // Your Gmail email address
+        pass: process.env.EMAIL_PASS, // Your Gmail app password
+      },
+    });
   }
 
   // Function to update the city's weather every 5 minutes
@@ -90,10 +101,70 @@ class WeatherService {
       }
 
       await record.save();
+      await this.checkAndSendAlerts(cityName, weatherData);
       return record;
     } catch (error) {
       console.error(`Error updating weather for ${cityName}:`, error);
       throw error;
+    }
+  }
+
+  async checkAndSendAlerts(cityName, weatherData) {
+    try {
+      const city = await City.findOne({ cityName });
+      if (!city || !city.alerts.length) {
+        return; // No alerts set for this city
+      }
+
+      // Check the weather data against each alert
+      for (const alert of city.alerts) {
+        let shouldSendEmail = false;
+        let exceededMetrics = [];
+
+        // Check temperature
+        if (alert.temperature && weatherData.main.temp >= alert.temperature) {
+          exceededMetrics.push(`Temperature: ${weatherData.main.temp}°C`);
+          shouldSendEmail = true;
+        }
+
+        // Check humidity
+        if (alert.humidity && weatherData.main.humidity >= alert.humidity) {
+          exceededMetrics.push(`Humidity: ${weatherData.main.humidity}%`);
+          shouldSendEmail = true;
+        }
+
+        // Check wind speed
+        if (alert.windSpeed && weatherData.wind.speed >= alert.windSpeed) {
+          exceededMetrics.push(`Wind Speed: ${weatherData.wind.speed} km/h`);
+          shouldSendEmail = true;
+        }
+
+        // Check cloud coverage
+        if (
+          alert.cloudCoverage &&
+          weatherData.clouds.all >= alert.cloudCoverage
+        ) {
+          exceededMetrics.push(`Cloud Coverage: ${weatherData.clouds.all}%`);
+          shouldSendEmail = true;
+        }
+
+        // If any threshold is exceeded, send an email alert
+        if (shouldSendEmail) {
+          const exceededMetricsText = exceededMetrics.join(", ");
+
+          const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: alert.email,
+            subject: `Weather Alert for ${cityName}: ${alert.alertName}`,
+            text: `Dear user,\n\nThe following weather thresholds have been exceeded in ${cityName}:\n\n${exceededMetricsText}.\n\nPlease take necessary precautions.\n\nBest regards,\nClimaCore (Weather Alert System)`,
+          };
+
+          await this.transporter.sendMail(mailOptions);
+          console.log(`Alert email sent to ${alert.email} for ${cityName}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking or sending alerts:", error);
     }
   }
 

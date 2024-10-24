@@ -191,7 +191,6 @@ const Home_page = ({ userPreferences }) => {
 
   const handleCityClick = (city) => {
     setCurrentCity(city);
-    console.log("New City:", city);
   };
 
   return (
