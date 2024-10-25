@@ -278,7 +278,6 @@ const WeatherCard = ({
   weatherCode,
   city,
 }) => {
-  currentWeather = "dust";
   const weatherIcons = {
     "01d": clearDay,
     "01n": clearNight,
