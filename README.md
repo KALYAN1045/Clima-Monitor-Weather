@@ -8,6 +8,8 @@ ClimaCore is a real-time weather monitoring system that tracks and stores weathe
 
 Access the live application [here](https://clima-monitor-frontend.vercel.app)
 
+🔴🔴🔴 Note: Due to Vercel's serverless architecture, background tasks like periodic updates and scheduled jobs (e.g., every 5 minutes) won’t function persistently, as serverless functions are stateless and only execute upon direct HTTP requests
+
 
 ---
     
